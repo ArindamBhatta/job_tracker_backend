@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import apiRoutes from "./api";
 import cors from "cors";
 import { database } from "./db/connection";
+import { firestore } from "firebase-admin";
 const app = express();
 const port = 8111;
 
@@ -14,8 +15,14 @@ app.use("/api", apiRoutes());
 
 const testFirestoreConnection = async () => {
   try {
-    const collections = await database.listCollections();
-    console.log(collections.map((col) => col.id));
+    const collections: firestore.CollectionReference[] =
+      await database.listCollections();
+    if (!collections) {
+      throw new Error("FireStore not connect yet");
+    }
+    if (collections) {
+      console.log(collections.map((collection) => collection.id));
+    }
   } catch (error) {
     console.error("❌ Firestore connection failed:", error);
   }

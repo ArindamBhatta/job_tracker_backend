@@ -1,39 +1,42 @@
-import UserService from 'src/api/services/UserService/UserService'
-import { ControllerPayload } from '../../../constants'
-import IUserController from './UserController.interface'
+import UserService from "src/api/services/UserService/UserService";
+import { ControllerPayload } from "../../../constants";
+import IUserController from "./UserController.interface";
 
 export default class UserController implements IUserController {
-  private userService: UserService
+  private userService: UserService;
   constructor(userService: UserService) {
-    this.userService = userService
+    this.userService = userService;
   }
 
   createUser = async (payload: ControllerPayload) => {
-    const data = payload.req.body //controllerPaylode object ar req hlo akta key
+    const data = payload.req.body;
     try {
-      return await this.userService.createUser(data)
+      return await this.userService.createUser(data);
     } catch (err) {
-      console.log({ err })
+      console.log({ err });
     }
-  }
+  };
 
   getUser = async (payload: ControllerPayload) => {
-    const email = payload.req.params.email
+    const email = payload.req.params.email;
     try {
-      return await this.userService.getUser({ email })
+      return await this.userService.getUser({ email });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   loginOrSignup = async (payload: ControllerPayload) => {
-    const email = payload.req.body.email
-    console.log('controller::loginOrSignup', typeof this.userService.loginOrSignup)
+    const email = payload.req.body.email;
+    console.log(
+      "controller::loginOrSignup",
+      typeof this.userService.loginOrSignup
+    );
     try {
-      const user = await this.userService.loginOrSignup({ email })
-      return user
+      const user = await this.userService.loginOrSignup({ email });
+      return user;
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 }
