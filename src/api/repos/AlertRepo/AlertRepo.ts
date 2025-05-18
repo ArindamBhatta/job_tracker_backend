@@ -1,17 +1,19 @@
-import { Alert } from '../../entities'
-import IAlertRepo, { IGetAlertsByUserIdRepoParams } from './AlertRepo.interface'
+import { Alert } from "../../entities";
+import IAlertRepo, {
+  IGetAlertsByUserIdRepoParams,
+} from "./AlertRepo.interface";
 
 export default class AlertRepo implements IAlertRepo {
-  private db: any // db config
-  private collectionName: string = 'alerts'
+  private db;
+  private collectionName: string = "alerts";
 
-  constructor(db: any) {
-    this.db = db
+  constructor(db) {
+    this.db = db;
   }
 
   getCollectionRef = () => {
-    return this.db.collection(this.collectionName)
-  }
+    return this.db.collection(this.collectionName);
+  };
 
   entityToStorageModel = (entity: Alert) => {
     return {
@@ -22,46 +24,48 @@ export default class AlertRepo implements IAlertRepo {
       userId: entity.userId,
       careerSiteUrl: entity.careerSiteUrl,
       filter: entity.filter,
-      createdTime: entity.createdAt
-    }
-  }
+      createdTime: entity.createdAt,
+    };
+  };
 
   async createAlert(payload: Alert) {
-    const alert = new Alert(payload)
-    console.log(payload)
-    const StorageData = this.entityToStorageModel(alert)
-    console.log(StorageData)
+    const alert = new Alert(payload);
+    console.log(payload);
+    const StorageData = this.entityToStorageModel(alert);
+    console.log(StorageData);
     try {
-      const docRef = await this.getCollectionRef().add(StorageData)
-      return docRef
+      const docRef = await this.getCollectionRef().add(StorageData);
+      return docRef;
     } catch (error) {
-      console.log(error)
-      return error
+      console.log(error);
+      return error;
     }
   }
 
   async updateAlert(payload: Alert, id: string) {
-    const StorageData = this.entityToStorageModel(payload)
+    const StorageData = this.entityToStorageModel(payload);
     try {
       const alertRef = this.getCollectionRef().doc(id);
-      await alertRef.update(StorageData)
+      await alertRef.update(StorageData);
       return alertRef;
     } catch (error) {
-      console.log(error)
-      return error
+      console.log(error);
+      return error;
     }
   }
 
   async getAlertsByUserId(payload: IGetAlertsByUserIdRepoParams) {
     try {
-      const userId = payload
-      console.log({ userId })
-      const snapshot = await this.getCollectionRef().where('userId', '==', userId).get();
-      const alertData = snapshot.docs.map((doc: any) => doc.data());
-      return alertData
+      const userId = payload;
+      console.log({ userId });
+      const snapshot = await this.getCollectionRef()
+        .where("userId", "==", userId)
+        .get();
+      const alertData = snapshot.docs.map((doc) => doc.data());
+      return alertData;
     } catch (error) {
-      console.error('Error retrieving alerts:', error)
-      return error
+      console.error("Error retrieving alerts:", error);
+      return error;
     }
   }
 }
